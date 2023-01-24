@@ -15,20 +15,29 @@ This orevents unnecessary memory usage and improves performance.
 # Example 1
 #Fibonacci series using a generator object
 
-def fibonacci(nth):
+def fibonacci_generator(nth):
     prev, curr = 0, 1
     counter = 0
 
     while counter < nth:
-        yield curr
+        if curr%2 != 0:
+            yield curr
         temp = curr
         curr = curr + prev
         prev = temp
 
         counter+=1
 
-print(type(fibonacci(10)))
-print(list(fibonacci(10)))
+# Print the list using the generator function with a condition of printing only odd numbers
+
+def print_fibo_odd(n):
+    # Lazy evaulation
+    my_gen = fibonacci_generator(n)
+
+    for i in my_gen:
+        print(i)
+
+print_fibo_odd(15)
 
 # Example 2
 # Returning a range of floating point numbers
@@ -39,6 +48,7 @@ def range_generator(start, end, step):
         yield curr
         curr = curr + step
 
+# Returning as a list robs it off the memory advantage it gives, so this is not a suitable example to be using yield
 print("Range Generator: ", list(range_generator(2, 22, 3.5)))
 
 # Example 3
@@ -52,8 +62,17 @@ print("Cubes bw 5 and 13 are: ", list(cubes_generator(5, 13)))
 
 
 # Program Output
-# <class 'generator'>
-# [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+# jayjagtap@ip-10-0-0-175 ~ % /usr/local/bin/python3 /Users/jayjagtap/Desktop/MyBooks/Python-cookbook/Chapter1/yield_exploration/yield_examples.py
+# 1
+# 1
+# 3
+# 5
+# 13
+# 21
+# 55
+# 89
+# 233
+# 377
 # Range Generator:  [2, 5.5, 9.0, 12.5, 16.0, 19.5]
 # Cubes bw 5 and 13 are:  [125, 216, 343, 512, 729, 1000, 1331, 1728, 2197]
 
