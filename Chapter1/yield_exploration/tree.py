@@ -54,6 +54,12 @@ class Tree:
             if front.right: Q.append(front.right)
         
         return order
+    
+    def height(self, root):
+        if root == None:
+            return -1
+        
+        return 1 + max(self.height(root.left), self.height(root.right))
         
 
 if __name__ == "__main__":
