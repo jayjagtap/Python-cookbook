@@ -1,66 +1,73 @@
-class TrieNode():
-    def __init__(self, value=None):
-        self.value = value
-        self.children = set()
-        self.is_word = False
+class Node:
+    def __init__(self, char):
+        self.char = char
+        self.children = dict()
+        self.is_end = False
 
-
-class trie():
+class Trie:
     def __init__(self):
-        self.root = TrieNode()
+        self.root = Node(char="/") # Lets denote root node by /
 
-    def insert(self, string):
-        parent = self.root
-        for char in string:
-            if not parent.children:
-                new_node = TrieNode(char)
-                parent.children.add(new_node)
-                
-            for child in parent.children:
-                if child.value == char: # Move to the next word
-                    parent = child
-                else: # Node not present
-                    new_node = TrieNode(char)
-                    parent.children.add(new_node)
-                    parent = new_node
+    def insert(self, word):
+        curr = self.root
 
-    def search_word(self, string):
-        isPresent=True
-        
-        parent = self.root
-        for char in string:
-            for child in parent.chidren:
-                if child.value == char:
-                    parent = child
-                else:
-                    isPresent=False
-                    break
-        
-        return isPresent
-
-    def print_trie_bfs(self):
-
-        from collections import deque
-        Q = deque()
-        Q.append([(x,0) for x in self.root.children])
-        bfs = []
-        print("Q: ", Q)
-        while Q:
-            print("Q: ", Q)
-            (front, level) = Q.popleft()
-            if len(bfs) < level:
-                bfs.append([front.value])
+        for char in word:
+            if char in curr.children:
+                curr = curr.children[char]
             else:
-                bfs = level.append(front.value)
-            
-            for child in front.children: 
-                Q.append((child, level+1))
+                curr.children[char] = Node(char)
+                curr = curr.children[char]
+        
+        curr.is_end = True
 
-        for row in bfs:
-            print(row)
+    def search_word(self,word):
+        curr = self.root
 
+        for char in word:
+            if char in curr.children.keys():
+                curr = curr.children[char]
+            else:
+                return False
+
+        if curr.is_end:
+            return True
+
+        return False 
+    
+    def starts_with(self, word):
+        curr = self.root
+
+        for char in word:
+            if char in curr.children.keys():
+                curr = curr.children[char]
+            else:
+                return False
+
+        return True
+
+    def print_all_words(self):
+        self.print_words_recursive(self.root, visited=set(), word="/")
+    
+    def print_words_recursive(self, curr, visited, word):
+        visited.add(curr)
+        if curr.is_end:
+            print(word)
+        
+        for char, childNode in curr.children.items():
+            if childNode not in visited:
+                self.print_words_recursive(childNode, visited, word+char)
+    
 if __name__ == "__main__":
-    my_trie = trie()
-    my_trie.insert("bat")
-    my_trie.insert("bag")
-    my_trie.print_trie_bfs()
+    prefix_tree = Trie()
+    prefix_tree.insert("apple")
+    prefix_tree.insert("apps")
+    prefix_tree.insert("bats")
+    prefix_tree.insert("bags")
+    prefix_tree.insert("cats")
+    prefix_tree.insert("cab")
+    prefix_tree.print_all_words()
+    print(f"Search word: apps: ", prefix_tree.search_word("apps"))
+    print(f"Search word: aps: ", prefix_tree.search_word("aps"))
+    print(f"Search word: aps: ", prefix_tree.search_word("aps"))
+    print(f"Starts with: ca: ", prefix_tree.starts_with("ca"))
+    
