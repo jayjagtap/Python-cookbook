@@ -1,93 +1,71 @@
-class Node():
-    def __init__(self, data):
-        self.data = data
+class Node:
+    def __init__(self, val):
+        self.val = val
         self.next = None
 
-class LinkedList():
-    def __init__(self):
-        self.head = None
+class LinkedList:
+    def __init__(self,val):
+        self.root = Node(val)
+
+    def insert(self, val):
+        # if root is None
+        if self.root == None:
+            self.root = Node(val)
+        
+        # Traverse to the end node
+        curr = self.root
+        while curr.next != None:
+            curr = curr.next
+        
+        curr.next = Node(val)
     
-    def append(self, data):
-        new_node=Node(data)
+    def print_linked_list(self):
 
-        if self.head == None:
-            self.head = new_node
-            return
+        curr = self.root
+        while curr != None:
+            print(f"{curr.val}")
+            curr = curr.next
+
+    def reverse_list(self):
+
+        prev, curr = None, self.root
     
-        curr_node = self.head
-        while curr_node.next:
-            curr_node=curr_node.next
+        while curr != None:
+            nextNode = curr.next
+            curr.next = prev
+            prev = curr
+            curr = nextNode
 
-        curr_node.next=new_node
+        self.root = prev
 
-    def print(self):
-        if self.head==None:
-            print("Linked List is empty")
+    def delete_Node(self, val):
+
+        # If node needs deletion is root
+        if self.root.val == val:
+            head = self.root
+            self.root = self.root.next
+            del head
             return
-        
-        curr_node = self.head
-        while curr_node:
-            print(curr_node.data)
-            curr_node=curr_node.next
 
-    def insert_after(self, node, data):
-        if node == None:
-            return
-        new_node = Node(data)
-        new_node.next=node.next
-        node.next=new_node
+        prev, curr = None, self.root
 
-    def remove(self, data):
-        # if head
-        curr_node = self.head
-        if curr_node and curr_node.data == data:
-            self.head = curr_node.next
-            curr_node = None
-            return
-        
-        prev=None
-        while curr_node and curr_node.data != data:
-            prev=curr_node
-            curr_node = curr_node.next
-        
-        if curr_node is None:
-            return
-        
-        prev.next=curr_node.next
-        curr_node=None
+        while curr.val != val and curr != None:
+            prev = curr
+            curr = curr.next
 
-    def len(self):
-        curr_node=self.head
-        count=0
-        while curr_node:
-            count+=1
-            curr_node=curr_node.next
-        
-        return count
-
-
-    def len_recursive(self, head):
-        if head is None:
-            return 0
-        return 1 + self.len_recursive(head.next)
-
-    
-
+        prev.next = curr.next
+        del curr
 
 if __name__ == "__main__":
-    ll = LinkedList()
-
-    ll.append(10)
-    ll.append(45)
-    ll.append(99)
-    ll.print()
-    ll.insert_after(ll.head.next, 39)
-    ll.print()
-    ll.append(432)
-    ll.append(66)
-    ll.remove(99)
-    ll.print()
-    print(ll.len())
-
-
-
+    my_list = LinkedList(19)
+    my_list.insert(1)
+    my_list.insert(2)
+    my_list.insert(5)
+    my_list.print_linked_list()
+    my_list.reverse_list()
+    print("Reversed list: ")
+    my_list.print_linked_list()
+    my_list.delete_Node(5)
+    my_list.delete_Node(1)
+    print("Print Linked List after Deletion")
+    my_list.print_linked_list()
